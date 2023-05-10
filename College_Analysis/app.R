@@ -172,6 +172,23 @@ server <- function(input, output) {
       guides(fill = guide_legend(title = "School Size"))
   })
   
+  Percent_Male_students_dis_plot <- reactive({
+    data_filtered() %>% filter(!is.na(Percent_Male_students)) %>% group_by(School_size) %>%  
+      ggplot(aes((x = Percent_Male_students), fill = School_size)) +
+      geom_density(alpha = .3) +
+      scale_fill_manual(values = fill_cols()) +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank()) +
+      ggtitle("Distirubtion of the Percent of Male Students") +
+      xlab("Percentage of students (%)") + 
+      ylab("Density") +
+      theme(panel.background = element_blank(), panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank()) +
+      guides(fill = guide_legend(title = "School Size"))
+  })
   
   median_10yr_earn <- reactive({
     data_filtered() %>% filter(!is.na(Median_earnings_after_10yrs)) %>% group_by(School_size) %>% 

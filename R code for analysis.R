@@ -1,4 +1,3 @@
-
 library(tidyverse)
 library(tidytext)
 library(textdata)
@@ -14,10 +13,10 @@ library(scales)
 
 rm(list=ls())
 
-setwd("D:/DATA 332")
+# setwd("D:/DATA 332")
+setwd("~/DATA-332/Final")
 
 raw_data <- read.csv("Most-Recent-Cohorts-Institution.csv")
-
 
 clean_data_student <- raw_data%>%
   select(UNITID,INSTNM, STABBR, LOAN_EVER, FEMALE,  AGE_ENTRY,MD_EARN_WNE_P10, MD_FAMINC)
@@ -35,10 +34,9 @@ data_join <- left_join(clean_data_student, clean_data_addmission, by = "UNITID")
   select(-ADM_RATE_CLEAN) %>%
   mutate(SCHOOL_SIZE = ifelse(UGDS < 5000, "Small", ifelse(UGDS < 15000, "Medium", "Large")))
 
-data_for_analysis <- left_join(data_join, state_dictionary, by = "STABBR") %>%
-  na.omit()
+data_for_analysis <- left_join(data_join, state_dictionary, by = "STABBR")
 
-data_for_analysis <- data_for_analysis%>%
+data_for_analysis <- data_for_analysis %>%
   select(-STABBR) %>%
   rename(
     Percent_students_with_loans = LOAN_EVER,
@@ -49,18 +47,28 @@ data_for_analysis <- data_for_analysis%>%
     Admissions_rate_percent = ADM_Rate_P,
     School_size = SCHOOL_SIZE,
     Institution_name = INSTNM
-  ) #%>%
-  #mutate(Percent_students_with_loans = round(100*Percent_students_with_loans,0),
-         #Percent_Female_students = round(100*Percent_Female_students,0),
-         #Mean_entry_age = round(Mean_entry_age, 0),
-         #Admissions_rate_percent = round(Admissions_rate_percent, 0),
-         #Median_family_income = round(Median_family_income,0),
-         #Median_earnings_after_10yrs = round(Median_earnings_after_10yrs,0)
-  #) %>%
+  ) %>%
   select(-ADM_RATE)
 
-  
+# Make all columns numeric values
+data_for_analysis$Percent_students_with_loans = as.numeric(data_for_analysis$Percent_students_with_loans)
+data_for_analysis$Percent_Female_students = as.numeric(data_for_analysis$Percent_Female_students)
+data_for_analysis$Mean_entry_age = as.numeric(data_for_analysis$Mean_entry_age)
+data_for_analysis$Median_earnings_after_10yrs = as.numeric(data_for_analysis$Median_earnings_after_10yrs)
+data_for_analysis$Median_family_income = as.numeric(data_for_analysis$Median_family_income)
+
+# Add column for percentage of male students
+data_for_analysis$Percent_Male_students =  (1 - data_for_analysis$Percent_Female_students)
+
+# Round all numbers
+data_for_analysis$Percent_students_with_loans = round(100*data_for_analysis$Percent_students_with_loans, 2)
+data_for_analysis$Percent_Female_students = round(100*data_for_analysis$Percent_Female_students, 2)
+data_for_analysis$Percent_Male_students = round(100*data_for_analysis$Percent_Male_students, 2)
+data_for_analysis$Mean_entry_age = round(data_for_analysis$Mean_entry_age, 0)
+data_for_analysis$Admissions_rate_percent = round(data_for_analysis$Admissions_rate_percent, 2)
+data_for_analysis$Median_family_income = round(data_for_analysis$Median_family_income, 0)
+data_for_analysis$Median_earnings_after_10yrs = round(data_for_analysis$Median_earnings_after_10yrs, 0)
+
+data_for_analysis <- data_for_analysis[rowSums(is.na(data_for_analysis)) < 3, ]
+
 write_csv(data_for_analysis, "data_for_analysis.csv")
-
-
-
