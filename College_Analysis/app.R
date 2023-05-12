@@ -27,6 +27,8 @@ library(ggthemes)
 library(DT)
 library(scales)
 
+rm(list = ls())
+
 appCSS <- "
 #loading-content {
 position: absolute;
@@ -47,6 +49,17 @@ states <- sort(unique(data$State_Name))
 schools <- c("Small", "Medium", "Large")
 
 model <- lm(Median_earnings_after_10yrs ~ State_Name + School_size, data = data)
+
+pred_df <- distinct(data, School_size, State_Name, .keep_all = TRUE)
+pred_df <- select(pred_df, School_size, State_Name)
+
+pred_df$Median_earnings_after_10yrs <- predict(model, newdata = pred_df)
+pred_df$pred <- 'Prediction'
+
+model_data <- select(data, School_size, State_Name, Median_earnings_after_10yrs)
+model_data$pred <- 'Actual'
+
+model_data <- rbind(model_data, pred_df)
 
 ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                 inlineCSS(appCSS),
@@ -80,11 +93,15 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                                                   plotOutput("row_7_T"), plotOutput("row_3_T")),
                                          tabPanel("Small School List", value = 'Small', tableOutput("small_T")),
                                          tabPanel("Medium School List",value = 'Medium', tableOutput("medium_T")),
-                                         tabPanel("Large School List", value = 'Large', tableOutput("large_T")))
+                                         tabPanel("Large School List", value = 'Large', tableOutput("large_T")),
+                                         tabPanel("Prediction Model", plotOutput("modelPlot"), HTML("<p>We created a prediction
+                                                                                model that predicts the median earnings after 10 
+                                                                                years for an indivdual based on the state and 
+                                                                                general size of the institution."))
                   )
                 )
+              )
 )
-
 
 server <- function(input, output) {
   
@@ -460,6 +477,16 @@ server <- function(input, output) {
            Please increase your filtering criteria to return fewer than 150 large sized schools")
     ) 
     data_large
+  })
+  
+  output$modelPlot <- renderPlot({
+    ggplot(model_data, aes(x = State_Name, y = Median_earnings_after_10yrs, fill = pred)) +
+      geom_bar(stat = "identity", position = "dodge") +
+      xlab("States") +
+      ylab("Median Earnings After 10yrs") +
+      facet_wrap(~ School_size) +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      ggtitle("Predictions vs. Actual")
   })
 }
 
