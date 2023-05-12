@@ -76,7 +76,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                   mainPanel(width = 8,
                             tabsetPanel( id = 'tabs', selected = 'Total',
                                          tabPanel("Total", value = 'Total', plotOutput("row_1_T"), plotOutput("row_2_T"), 
-                                                  plotOutput("row_3_T")),
+                                                  plotOutput("row_7_T"), plotOutput("row_3_T")),
                                          tabPanel("Small School List", value = 'Small', tableOutput("small_T")),
                                          tabPanel("Medium School List",value = 'Medium', tableOutput("medium_T")),
                                          tabPanel("Large School List", value = 'Large', tableOutput("large_T")))
@@ -172,6 +172,7 @@ server <- function(input, output) {
       guides(fill = guide_legend(title = "School Size"))
   })
   
+  
   Percent_Male_students_dis_plot <- reactive({
     data_filtered() %>% filter(!is.na(Percent_Male_students)) %>% group_by(School_size) %>%  
       ggplot(aes((x = Percent_Male_students), fill = School_size)) +
@@ -189,6 +190,27 @@ server <- function(input, output) {
             panel.grid.minor = element_blank()) +
       guides(fill = guide_legend(title = "School Size"))
   })
+
+  
+  state_plot <- reactive({
+    data_filtered() %>% group_by(State_Name) %>% summarise(count = n()) %>%
+      arrange(count, desc(count)) %>%
+      ggplot(aes(x = State_Name, y = count, fill = State_Name)) +
+      geom_bar(colour = "black", stat = "identity", alpha = 0.3) +
+      geom_text(aes(label = count), position = position_dodge(width=1), vjust = -0.25, size = 5) +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank()) +
+      scale_fill_manual(values = fill_cols()) +
+      ggtitle("Number of Schools by State") +
+      xlab("School Location") +
+      ylab("Count") +
+      theme(panel.background = element_blank(), panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank())
+  })
+
   
   median_10yr_earn <- reactive({
     data_filtered() %>% filter(!is.na(Median_earnings_after_10yrs)) %>% group_by(School_size) %>% 
@@ -207,8 +229,8 @@ server <- function(input, output) {
             panel.grid.minor = element_blank()) +
       guides(fill = guide_legend(title = "School Size"))
   })
-  
 
+  
   Mean_entry_age_plot <- reactive({
     data_filtered() %>% filter(!is.na(Mean_entry_age)) %>% group_by(School_size) %>%
       ggplot(aes(x = Mean_entry_age, fill = School_size)) + geom_density(alpha = 0.3) +
@@ -266,7 +288,7 @@ server <- function(input, output) {
     
   })
   
- 
+  
   output$row_1_T <- renderPlot({
     if (count_schools() == 0) {
       
@@ -287,8 +309,8 @@ server <- function(input, output) {
                    widths = c(7,6))
     }
   })
-  
  
+  
   output$row_2_T <- renderPlot({
     if (count_schools() == 0) {
       
@@ -306,7 +328,7 @@ server <- function(input, output) {
     else {
       grid.arrange(
         Percent_Female_students_dis_plot() + theme(legend.position = "none"),
-        Mean_entry_age_plot() + theme(legend.position = "none"),
+        Percent_Male_students_dis_plot() + theme(legend.position = "none"),
         get_legend(school_plot() + guides(fill = guide_legend(title = "School Size"))),
         ncol = 3, nrow = 1,
         widths = c(5, 5, 1))
@@ -314,7 +336,33 @@ server <- function(input, output) {
     
   })
   
- 
+  
+  output$row_7_T <- renderPlot({
+    if (count_schools() == 0) {
+      
+      validate(
+        need(count_schools() != 0, "")
+      )
+    }
+    if (count_schools() == 1) {
+      
+      validate(
+        need(count_schools() != 1, "Additional graphs cannot be displayed when there is only one school selected. 
+                                    Please increase your filtering criteria")
+      )
+    }
+    else {
+      grid.arrange(
+        Mean_entry_age_plot() + theme(legend.position = "none"),
+        state_plot() + theme(legend.position = "none"),
+        get_legend(school_plot() + guides(fill = guide_legend(title = "School Size"))),
+        ncol = 3, nrow = 1,
+        widths = c(5, 5, 1))
+    }
+    
+  })
+  
+  
   output$row_3_T <- renderPlot({
     if (count_schools() == 0) {
       
