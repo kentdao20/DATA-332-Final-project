@@ -46,6 +46,7 @@ states <- sort(unique(data$State_Name))
 
 schools <- c("Small", "Medium", "Large")
 
+model <- lm(Median_earnings_after_10yrs ~ State_Name + School_size, data = data)
 
 ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                 inlineCSS(appCSS),
