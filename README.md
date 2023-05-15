@@ -94,7 +94,9 @@ write_csv(data_for_analysis, "data_for_analysis.csv")
 ```
 
 ### Data graph:
-**1. **
+**1. Charts** 
+
+
 
 ### Shiny Application:
 **1. UI:**
@@ -138,4 +140,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
 ```
 This UI is make with a side bar to choose showing either small, medium or large school or all 3 if you want to. Next to it will have 4 main tabs: Graphs, pivot of small, medium and large school. 
 
+**2. Shiny App Link**
+
+https://kienkcp.shinyapps.io/College_Analysis/
 
