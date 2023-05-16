@@ -89,6 +89,25 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                 
                   mainPanel(width = 8,
                             tabsetPanel( id = 'tabs', selected = 'Total',
+                                         tabPanel("Title Page", 
+                                                  tags$h1("College Scorecard Analysis"),
+                                                  tags$p("The research that we have done within this DATA-332 final project
+                                                          includes the college scorecard data from the DATA.gov website. Our 
+                                                          goal was to give a better idea of the best choice to students 
+                                                          searching for colleges to attend. In doing so, we analyzed the size
+                                                          of the institution, the gender demographics, average entrance age, 
+                                                          financial aid help, and the median earnings after graduation."),
+                                                  tags$div(class = "custom-class", "We chose to do this research becuase students
+                                                           in the college search do not have any good tools to give them an idea
+                                                           of the schools that offer the best value statistically. They only hear
+                                                           about schools from what others tell them, and often the best choice is
+                                                           not always made. Therefore, we created some requirements to fulfill in
+                                                           our work. First, we decided to show visualizations of distributions of
+                                                           school demographics and stats. Then, we decided to show in tables some
+                                                           of the best choices based on the sizes of the institutions. Then, we 
+                                                           decided that it would be a good idea to create a prediction model that 
+                                                           would predict median earnings after school based on the institution state
+                                                           and size.")),
                                          tabPanel("Total", value = 'Total', plotOutput("row_1_T"), plotOutput("row_2_T"), 
                                                   plotOutput("row_7_T"), plotOutput("row_3_T")),
                                          tabPanel("Small School List", value = 'Small', tableOutput("small_T")),
