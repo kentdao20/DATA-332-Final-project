@@ -4,7 +4,7 @@
 
 
 ## Overview:
-   The data we are working with is the college scorecard, which was taken from the government website data.gov. This dataset is recording the data about universities and their percentage of acceptance, gender, financial and income after college. We will be working with this data to visualize the colleges base on the population, their income 10 years after college, acceptance rate the percent of students who are having financial aid and students who are still 
+   We are working with the College Scorecard dataset, a rich collection of information procured from the government's Data.gov portal. This dataset provides a wealth of statistics regarding universities, including their acceptance percentages, gender makeup, financial aid utilization, and post-college income levels. Our primary goal is to leverage this data to create insightful visualizations. These visualizations will focus on aspects such as student population size, median income ten years post-graduation, university acceptance rates, the proportion of students receiving financial aid, and those still pursuing their education. This project aims to shed light on the intricate dynamics within the higher education landscape.
 
 ### Cleaning data:
 
