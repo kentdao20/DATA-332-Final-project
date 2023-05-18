@@ -72,10 +72,10 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                                            choices = states, #Select the states of interest. 
                                            multiple = TRUE, # Multiselection is possible
                                            options = list(`actions-box` = TRUE), 
-                                           selected = "California"),
+                                           selected = "Illinois"),
                                sliderInput("admin_input", 
                                            "Select an admission rate range",
-                                           min = 0, max = 100, value = c(0, 100), post="%"),
+                                           min = 0, max = 99, value = c(0, 99), post="%"),
                                pickerInput("School_size", # Select school size
                                            label = "Select school sizes", 
                                            choices = schools, 
@@ -108,7 +108,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),useShinyjs(),
                                                            decided that it would be a good idea to create a prediction model that 
                                                            would predict median earnings after school based on the institution state
                                                            and size.")),
-                                         tabPanel("Total", value = 'Total', plotOutput("row_1_T"), plotOutput("row_2_T"), 
+                                         tabPanel("Overall Charts", value = 'Total', plotOutput("row_1_T"), plotOutput("row_2_T"), 
                                                   plotOutput("row_7_T"), plotOutput("row_3_T")),
                                          tabPanel("Small School List", value = 'Small', tableOutput("small_T")),
                                          tabPanel("Medium School List",value = 'Medium', tableOutput("medium_T")),
@@ -503,7 +503,6 @@ server <- function(input, output) {
       geom_bar(stat = "identity", position = "dodge") +
       xlab("States") +
       ylab("Median Earnings After 10yrs") +
-      facet_wrap(~ School_size) +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
       ggtitle("Predictions vs. Actual")
   })
