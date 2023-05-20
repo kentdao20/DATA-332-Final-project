@@ -144,3 +144,9 @@ This UI is make with a side bar to choose showing either small, medium or large 
 
 https://kienkcp.shinyapps.io/College_Analysis/
 
+**3. Video Link**
+After editing this is our video
+
+https://youtu.be/YPQHhyad8JQ
+
+
